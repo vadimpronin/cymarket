@@ -169,11 +169,11 @@ return [
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
+        CyMarket\Providers\AppServiceProvider::class,
+        CyMarket\Providers\AuthServiceProvider::class,
+        // CyMarket\Providers\BroadcastServiceProvider::class,
+        CyMarket\Providers\EventServiceProvider::class,
+        CyMarket\Providers\RouteServiceProvider::class,
 
     ],
 
