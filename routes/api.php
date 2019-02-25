@@ -16,3 +16,10 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/telegram/hook', function () {
+    //$updates = Telegram::getWebhookUpdates();
+    Telegram::commandsHandler(true);
+
+    return 'ok';
+})->name('telegram-hook');
