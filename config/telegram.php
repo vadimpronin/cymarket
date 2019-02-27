@@ -32,14 +32,15 @@ return [
     |             ]
     */
     'bots'                         => [
-        'mybot' => [
+        'cymarket_bot' => [
             'username'            => env('TELEGRAM_BOT_NAME'),
             'token'               => env('TELEGRAM_BOT_TOKEN'),
             'certificate_path'    => env('TELEGRAM_CERTIFICATE_PATH'),
             'webhook_url'         => env('TELEGRAM_WEBHOOK_URL'),
             'commands'            => [
                 \Telegram\Bot\Commands\HelpCommand::class,
-                \CyMarket\Telegram\Commands\StartCommand::class
+                \CyMarket\Telegram\Commands\StartCommand::class,
+                \CyMarket\Telegram\Commands\SellCommand::class,
             ],
         ],
 
@@ -58,7 +59,7 @@ return [
     | your default bot for regular use.
     |
     */
-    'default'                      => 'mybot',
+    'default'                      => 'cymarket_bot',
 
     /*
     |--------------------------------------------------------------------------
