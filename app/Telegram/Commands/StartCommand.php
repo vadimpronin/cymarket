@@ -22,6 +22,9 @@ class StartCommand extends Command
      */
     public function handle()
     {
+
+        dump($this->update->getChat()->id);
+
         // This will send a message using `sendMessage` method behind the scenes to
         // the user/chat id who triggered this command.
         // `replyWith<Message|Photo|Audio|Video|Voice|Document|Sticker|Location|ChatAction>()` all the available methods are dynamically
@@ -43,12 +46,33 @@ class StartCommand extends Command
         }
 
         // Reply with the commands list
-        $this->replyWithMessage(['text' => $response]);
+        //$this->replyWithMessage(['text' => $response]);
 
         // Trigger another command dynamically from within this command
         // When you want to chain multiple commands within one or process the request further.
         // The method supports second parameter arguments which you can optionally pass, By default
         // it'll pass the same arguments that are received for this command originally.
         //$this->triggerCommand('subscribe');
+
+
+        $keyboard = [
+            ['7', '8', '9'],
+            ['4', '5', '6'],
+            ['1', '2', '3'],
+            ['0']
+        ];
+
+        $reply_markup = [
+            'keyboard' => $keyboard,
+            'resize_keyboard' => true,
+            'one_time_keyboard' => true
+        ];
+
+        $this->replyWithMessage([
+            'chat_id' => $this->update->getChat()->id,
+            'text' => 'Hello World',
+            'reply_markup' => json_encode($reply_markup),
+        ]);
+
     }
 }
