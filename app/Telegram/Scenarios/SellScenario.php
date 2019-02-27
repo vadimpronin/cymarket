@@ -20,7 +20,7 @@ class SellScenario extends AbstractScenario
     public function initStepAskDescription()
     {
         $this->telegram->sendMessage([
-            'chat_id' => $this->user->telegram_id,
+            'chat_id' => $this->userChat->chat->telegram_id,
             'text' => __('What would you like to sell (short description)'),
         ]);
     }
@@ -40,7 +40,7 @@ class SellScenario extends AbstractScenario
     public function initStepAskPhotos()
     {
         $this->telegram->sendMessage([
-            'chat_id' => $this->user->telegram_id,
+            'chat_id' => $this->userChat->chat->telegram_id,
             'text' => __('Please provide 1-5 pictures'),
         ]);
     }
@@ -60,7 +60,7 @@ class SellScenario extends AbstractScenario
     public function initStepAskPrice()
     {
         $this->telegram->sendMessage([
-            'chat_id' => $this->user->telegram_id,
+            'chat_id' => $this->userChat->chat->telegram_id,
             'text' => __('What is the price?'),
         ]);
 
@@ -81,7 +81,7 @@ class SellScenario extends AbstractScenario
     public function initStepAskArea()
     {
         $this->telegram->sendMessage([
-            'chat_id' => $this->user->telegram_id,
+            'chat_id' => $this->userChat->chat->telegram_id,
             'text' => __('Please chose the area'),
         ]);
 
@@ -102,7 +102,7 @@ class SellScenario extends AbstractScenario
     public function initStepAskCategory()
     {
         $this->telegram->sendMessage([
-            'chat_id' => $this->user->telegram_id,
+            'chat_id' => $this->userChat->chat->telegram_id,
             'text' => __('Please select the category'),
         ]);
 
@@ -124,7 +124,7 @@ class SellScenario extends AbstractScenario
     public function finalStep()
     {
         $this->telegram->sendMessage([
-            'chat_id' => $this->user->telegram_id,
+            'chat_id' => $this->userChat->chat->telegram_id,
             'text' => __('Cool! You are done.'),
         ]);
 

@@ -3,6 +3,7 @@
 namespace CyMarket\Telegram;
 
 use CyMarket\Exceptions\TelegramScenarioException;
+use CyMarket\UserChat;
 use Telegram\Bot\Api;
 
 /**
@@ -16,10 +17,14 @@ abstract class AbstractScenario
     /** @var \Illuminate\Foundation\Application|mixed|Api $telegram */
     protected $telegram;
 
-    public function __construct()
+    /** @var UserChat $userChat */
+    protected $userChat;
+
+    public function __construct(UserChat $userChat)
     {
         $this->user = \Auth::user();
         $this->telegram = app(Api::class);
+        $this->userChat = $userChat;
     }
 
     /**
@@ -29,7 +34,7 @@ abstract class AbstractScenario
     {
         \Log::debug('Processing current step reply');
 
-        $currentStep = $this->user->current_step;
+        $currentStep = $this->userChat->current_step;
         if (!in_array($currentStep, $this->steps)) {
             throw new TelegramScenarioException('Current scenario step not found');
         }
@@ -56,10 +61,10 @@ abstract class AbstractScenario
      */
     public function initFirstStep()
     {
-        if ($this->user->current_scenario) {
+        if ($this->userChat->current_scenario) {
             $this->resetScenario();
             $this->telegram->sendMessage([
-                'chat_id' => $this->user->telegram_id,
+                'chat_id' => $this->userChat->chat->telegram_id,
                 'text' => __('Previous command cancelled'),
             ]);
         }
@@ -79,9 +84,9 @@ abstract class AbstractScenario
 
         $this->{$stepMethodName}();
 
-        $this->user->current_scenario = static::class;
-        $this->user->current_step = $step;
-        $this->user->save();
+        $this->userChat->current_scenario = static::class;
+        $this->userChat->current_step = $step;
+        $this->userChat->save();
 
         \Log::debug('initStep() done', [$step]);
     }
@@ -92,11 +97,14 @@ abstract class AbstractScenario
     public function nextStep()
     {
         \Log::debug('Going to the next step');
-        $currentStep = $this->user->current_step;
+
+        $currentStep = $this->userChat->current_step;
         \Log::debug('Current step was', [$currentStep]);
+
         $steps = array_values($this->steps);
         $currentStepIndex = array_search($currentStep, $steps);
         \Log::debug('Current step index was', [$currentStepIndex]);
+
         if ($currentStepIndex === false) {
             throw new TelegramScenarioException('Current scenario step not found');
         }
@@ -120,9 +128,9 @@ abstract class AbstractScenario
     {
         \Log::debug('Resetting scenario');
 
-        $this->user->current_scenario = null;
-        $this->user->current_step = null;
-        $this->user->save();
+        $this->userChat->current_scenario = null;
+        $this->userChat->current_step = null;
+        $this->userChat->save();
 
         \Log::debug('resetScenario() done');
     }

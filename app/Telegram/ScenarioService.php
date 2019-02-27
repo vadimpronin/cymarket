@@ -12,14 +12,12 @@ class ScenarioService
      */
     public function processUpdate($update)
     {
-        $user = \Auth::user();
-
-        if (!$user->current_scenario) {
+        if (!$update->userChat->current_scenario) {
             return;
         }
 
         /** @var AbstractScenario $scenario */
-        $scenario = app($user->current_scenario);
+        $scenario = app($update->userChat->current_scenario, ['userChat' => $update->userChat]);
 
         $scenario->processStep($update);
     }

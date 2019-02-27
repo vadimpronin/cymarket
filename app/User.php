@@ -14,20 +14,17 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string|null $email
  * @property string|null $telegram_username
  * @property int|null $telegram_id
- * @property string|null $current_scenario
- * @property string|null $current_step
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property string|null $password
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property-read \Illuminate\Database\Eloquent\Collection|\CyMarket\UserChat[] $userChats
  * @method static \Illuminate\Database\Eloquent\Builder|\CyMarket\User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\CyMarket\User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\CyMarket\User query()
  * @method static \Illuminate\Database\Eloquent\Builder|\CyMarket\User whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\CyMarket\User whereCurrentScenario($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\CyMarket\User whereCurrentStep($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\CyMarket\User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\CyMarket\User whereEmailVerifiedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\CyMarket\User whereId($value)
@@ -69,4 +66,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function userChats()
+    {
+        return $this->hasMany(UserChat::class);
+    }
 }

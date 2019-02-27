@@ -23,7 +23,7 @@ class SellCommand extends Command
      */
     public function handle()
     {
-        $scenario = new SellScenario();
+        $scenario = new SellScenario($this->update->userChat);
 
         $scenario->start();
     }

@@ -2,9 +2,11 @@
 
 namespace CyMarket\Http\Controllers;
 
+use CyMarket\Chat;
 use CyMarket\Exceptions\TelegramScenarioException;
 use CyMarket\Telegram\ScenarioService;
 use CyMarket\User;
+use CyMarket\UserChat;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramResponseException;
 
@@ -14,6 +16,7 @@ class TelegramWebhookController extends Controller
         $update = $telegram->getWebhookUpdate();
 
         $telegramUser = $update['message']['from'];
+        $userFullName = $telegramUser['first_name'] . ' ' . $telegramUser['last_name'];
 
         $user = User::firstOrCreate(
             [
@@ -21,11 +24,29 @@ class TelegramWebhookController extends Controller
             ],
             [
                 'telegram_username' => $telegramUser['username'],
-                'name' => $telegramUser['first_name'] . ' ' . $telegramUser['last_name'],
+                'name' => $userFullName,
             ]
         );
 
         \Auth::login($user);
+
+        $telegramChat = $update['message']['chat'];
+        $chatType = Chat::STRINGTYPEMAP[$telegramChat['type']];
+        $chatData = [
+            'type' => $chatType,
+            'title' => ($chatType == Chat::TYPE_PRIVATE ? $userFullName : $telegramChat['title']),
+            'username' => (!empty($telegramChat['username']) ? $telegramChat['username'] : ''),
+        ];
+
+        $chat = Chat::firstOrCreate(['telegram_id' => $telegramChat['id']], $chatData);
+        $userChat = UserChat::firstOrCreate([
+            'user_id' => $user->id,
+            'chat_id' => $chat->id,
+        ]);
+
+        $update->userChat = $userChat;
+
+        dump($update);
 
         $message = $update->getMessage();
 
