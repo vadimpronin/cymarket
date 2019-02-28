@@ -5,6 +5,7 @@ namespace CyMarket\Telegram;
 use CyMarket\Exceptions\TelegramScenarioException;
 use CyMarket\UserChat;
 use Telegram\Bot\Api;
+use Telegram\Bot\Objects\Update;
 
 /**
  * @property array steps
@@ -20,6 +21,8 @@ abstract class AbstractScenario
     /** @var UserChat $userChat */
     protected $userChat;
 
+    protected $keyboard;
+
     public function __construct(UserChat $userChat)
     {
         $this->user = \Auth::user();
@@ -28,9 +31,10 @@ abstract class AbstractScenario
     }
 
     /**
+     * @param Update $update
      * @throws TelegramScenarioException
      */
-    public function processStep($update)
+    public function processStep(Update $update)
     {
         \Log::debug('Processing current step reply');
 
@@ -42,7 +46,7 @@ abstract class AbstractScenario
         $stepMethodName = 'processStep' . ucfirst($currentStep);
 
         \Log::debug('Running', [$stepMethodName]);
-        $this->{$stepMethodName}();
+        $this->{$stepMethodName}($update);
     }
 
     /**
@@ -133,6 +137,33 @@ abstract class AbstractScenario
         $this->userChat->save();
 
         \Log::debug('resetScenario() done');
+    }
+
+    /**
+     * @param $params
+     * @return \Telegram\Bot\Objects\Message
+     * @throws \Telegram\Bot\Exceptions\TelegramSDKException
+     */
+    public function sendMessage($params)
+    {
+        $params += ['chat_id' => $this->userChat->chat->telegram_id];
+
+        if ($this->keyboard) {
+            $replyMarkup = [
+                'keyboard' => $this->keyboard,
+                'resize_keyboard' => true,
+                'one_time_keyboard' => true
+            ];
+
+            $params['reply_markup'] = json_encode($replyMarkup);
+        }
+
+        return $this->telegram->sendMessage($params);
+    }
+
+    public function setKeyboard($keyboard)
+    {
+        $this->keyboard = $keyboard;
     }
 
     abstract public function finalStep();

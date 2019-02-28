@@ -3,6 +3,7 @@
 namespace CyMarket\Telegram\Scenarios;
 
 use CyMarket\Telegram\AbstractScenario;
+use Telegram\Bot\Objects\Update;
 
 class SellScenario extends AbstractScenario
 {
@@ -19,16 +20,16 @@ class SellScenario extends AbstractScenario
      */
     public function initStepAskDescription()
     {
-        $this->telegram->sendMessage([
-            'chat_id' => $this->userChat->chat->telegram_id,
+        $this->sendMessage([
             'text' => __('What would you like to sell (short description)'),
         ]);
     }
 
     /**
+     * @param Update $update
      * @throws \CyMarket\Exceptions\TelegramScenarioException
      */
-    public function processStepAskDescription()
+    public function processStepAskDescription(Update $update)
     {
 
         $this->nextStep();
@@ -39,16 +40,16 @@ class SellScenario extends AbstractScenario
      */
     public function initStepAskPhotos()
     {
-        $this->telegram->sendMessage([
-            'chat_id' => $this->userChat->chat->telegram_id,
+        $this->sendMessage([
             'text' => __('Please provide 1-5 pictures'),
         ]);
     }
 
     /**
+     * @param Update $update
      * @throws \CyMarket\Exceptions\TelegramScenarioException
      */
-    public function processStepAskPhotos()
+    public function processStepAskPhotos(Update $update)
     {
 
         $this->nextStep();
@@ -59,17 +60,17 @@ class SellScenario extends AbstractScenario
      */
     public function initStepAskPrice()
     {
-        $this->telegram->sendMessage([
-            'chat_id' => $this->userChat->chat->telegram_id,
+        $this->sendMessage([
             'text' => __('What is the price?'),
         ]);
 
     }
 
     /**
+     * @param Update $update
      * @throws \CyMarket\Exceptions\TelegramScenarioException
      */
-    public function processStepAskPrice()
+    public function processStepAskPrice(Update $update)
     {
 
         $this->nextStep();
@@ -80,17 +81,24 @@ class SellScenario extends AbstractScenario
      */
     public function initStepAskArea()
     {
-        $this->telegram->sendMessage([
-            'chat_id' => $this->userChat->chat->telegram_id,
+        $keyboard = [
+            ['Limassol', 'Paphos', 'Nicosia'],
+            ['Larnaca', 'Agia-Napa'],
+        ];
+
+        $this->setKeyboard($keyboard);
+
+        $this->sendMessage([
             'text' => __('Please chose the area'),
         ]);
 
     }
 
     /**
+     * @param Update $update
      * @throws \CyMarket\Exceptions\TelegramScenarioException
      */
-    public function processStepAskArea()
+    public function processStepAskArea(Update $update)
     {
 
         $this->nextStep();
@@ -101,17 +109,24 @@ class SellScenario extends AbstractScenario
      */
     public function initStepAskCategory()
     {
-        $this->telegram->sendMessage([
-            'chat_id' => $this->userChat->chat->telegram_id,
+        $keyboard = [
+            ['Toys', 'Cars', 'Home'],
+            ['Other'],
+        ];
+
+        $this->setKeyboard($keyboard);
+
+        $this->sendMessage([
             'text' => __('Please select the category'),
         ]);
 
     }
 
     /**
+     * @param Update $update
      * @throws \CyMarket\Exceptions\TelegramScenarioException
      */
-    public function processStepAskCategory()
+    public function processStepAskCategory(Update $update)
     {
 
         $this->nextStep();
@@ -123,8 +138,7 @@ class SellScenario extends AbstractScenario
      */
     public function finalStep()
     {
-        $this->telegram->sendMessage([
-            'chat_id' => $this->userChat->chat->telegram_id,
+        $this->sendMessage([
             'text' => __('Cool! You are done.'),
         ]);
 
